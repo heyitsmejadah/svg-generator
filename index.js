@@ -32,11 +32,15 @@ const questions = [
 
 // Function to write logo file
 function createLogo (fileName, data) {
-    const svgTemplate = ``;
-    const svgContentArray = [svgTemplate];
-    svgContentArray.push(``);
+    const {shape, color, text, "text-color": textColor} = data;
+    const svgTemplate = `
+    <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+    <${shape} cx="100" cy="100" r="50" fill="${color}" />
+    <text x="100" y="110" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
+    </svg>
+    `;
 
-    return fs.writeFile(fileName, jsonFormat(data), (err) =>
+    fs.writeFile(fileName, svgTemplate, (err) =>
     err ? console.error(err) : console.log('Logo created!')
 )};
 
@@ -52,10 +56,10 @@ function init() {
 // Function to format data
 function jsonFormat(data) {
     const jsonDataString = JSON.stringify(data, null, 2);
-    fs.writeFileSync('output.json', jsonData);
+    fs.writeFileSync('output.json', jsonDataString);
     console.log('Data hs been written to output.json');
+    return data;
 }
 
 // Initialize app
 init();
-createLogo(fileName,questions);
