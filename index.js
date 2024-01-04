@@ -15,10 +15,10 @@ const questions = [
     {
         name: "textColor",
         message: "Choose a color for your text:",
-        type: "list",
+        type: "input",
         choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"],
         validate: function(input) {
-            return input.trim() !== "" ? true : "Please enter a color";
+            return isValidColor(input) ? true : "Please enter a color or hex number";
         }
     },
     {
@@ -30,14 +30,20 @@ const questions = [
     {
         name: "color",
         message: "Choose a color for your shape:",
-        type: "list",
+        type: "input",
         // make it to where user can input any color or hex number
-        choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"],
         validate: function(input) {
-            return input.trim() !== "" ? true : "Please enter a color";
+            return isValidColor(input) ? true : "Please enter a color or hex number";
         }
     },
 ];
+
+
+// Function to validate color input
+function isValidColor(input) {
+    const colorHex = /^(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})|Red|Orange|Yellow|Green|Blue|Purple|Black|White)$/i;
+    return colorHex.test(input.trim());
+}
 
 // Function to write logo file
 function createLogo (fileName, data) {
@@ -48,14 +54,14 @@ function createLogo (fileName, data) {
         case "Square":
             svgTemplate = `
             <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-                <rect x="50" y="50" width="200" height="100" fill="${color}" />
+                <rect x="100" y="70" width="100" height="100" fill="${color}" />
                 <text x="150" y="130" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
             </svg>`;
             break;
         case "Circle":
             svgTemplate = `
             <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="150" cy="100" r="50" fill="${color}" />
+                <circle cx="120" cy="100" r="50" fill="${color}" />
                 <text x="150" y="130" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
             </svg>`;
             break;
@@ -67,7 +73,7 @@ function createLogo (fileName, data) {
             </svg>`;
             break;
         default:
-            console.err("Invalid Shape");
+            console.error("Invalid Shape");
             return;
     }
 

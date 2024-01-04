@@ -1,5 +1,5 @@
 
             <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="150,50 100,150 200,150" fill="Green" />
-                <text x="150" y="130" text-anchor="middle" fill="Blue" font-size="30px" font-weight="bold">JFP</text>
+                <polygon points="150,50 100,150 200,150" fill="green" />
+                <text x="150" y="130" text-anchor="middle" fill="white" font-size="30px" font-weight="bold">JFP</text>
             </svg>
