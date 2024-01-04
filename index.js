@@ -5,60 +5,84 @@ const fileName = "logo.svg";
 
 const questions = [
     {
-        name: "shape",
-        message: "Choose a shape for your logo:",
-        type: "list",
-        choices: ["Square","Circle","Triangle"]
-    },
-    {
-        name: "color",
-        message: "Choose a color for your logo:",
-        type: "list",
-        // make it to where user can input any color or hex number
-        choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"]
-    },
-    {
         name: "text",
         message: "Choose three letters to include in your logo:",
         type: "input",
+        validate: function(input) {
+            return input.length === 3 ? true : "Please enter exactly 3 characters";
+        }
     },
     {
-        name: "text-color",
+        name: "textColor",
         message: "Choose a color for your text:",
         type: "list",
-        choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"]
-    }
+        choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"],
+        validate: function(input) {
+            return input.trim() !== "" ? true : "Please enter a color";
+        }
+    },
+    {
+        name: "shape",
+        message: "Choose a shape for your logo:",
+        type: "list",
+        choices: ["Square","Circle","Triangle"],
+    },
+    {
+        name: "color",
+        message: "Choose a color for your shape:",
+        type: "list",
+        // make it to where user can input any color or hex number
+        choices: ["Red","Orange","Yellow","Green","Blue","Purple","Black","White"],
+        validate: function(input) {
+            return input.trim() !== "" ? true : "Please enter a color";
+        }
+    },
 ];
 
 // Function to write logo file
 function createLogo (fileName, data) {
-    const {shape, color, text, "text-color": textColor} = data;
-    const svgTemplate = `
-    <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-    <${shape} cx="100" cy="100" r="50" fill="${color}" />
-    <text x="100" y="110" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
-    </svg>
-    `;
+    const {shape, color, text, textColor} = data;
+    let svgTemplate;
+
+    switch(shape) {
+        case "Square":
+            svgTemplate = `
+            <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="50" y="50" width="200" height="100" fill="${color}" />
+                <text x="150" y="130" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
+            </svg>`;
+            break;
+        case "Circle":
+            svgTemplate = `
+            <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="150" cy="100" r="50" fill="${color}" />
+                <text x="150" y="130" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
+            </svg>`;
+            break;
+        case "Triangle":
+            svgTemplate = `
+            <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="150,50 100,150 200,150" fill="${color}" />
+                <text x="150" y="130" text-anchor="middle" fill="${textColor}" font-size="30px" font-weight="bold">${text}</text>
+            </svg>`;
+            break;
+        default:
+            console.err("Invalid Shape");
+            return;
+    }
 
     fs.writeFile(fileName, svgTemplate, (err) =>
-    err ? console.error(err) : console.log('Logo created!')
+    err ? console.error(err) : console.log("Generated logo.svg")
 )};
 
 // Function to initialize app
 function init() {
     inquirer.prompt(questions).then((data) => {
         console.log(data);
-        const jsonData = jsonFormat(data);
-        createLogo("logo.svg", jsonData);
+        // clone data object
+        const jsonData = {...data};
+        createLogo(fileName, jsonData);
     });
-}
-
-// Function to format data
-function jsonFormat(data) {
-    const jsonDataString = JSON.stringify(data, null, 2);
-    fs.writeFileSync('output.json', jsonDataString);
-    console.log('Data hs been written to output.json');
-    return data;
 }
 
 // Initialize app
